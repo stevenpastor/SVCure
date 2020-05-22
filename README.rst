@@ -45,7 +45,7 @@ VENV and Pip Run::
 
 Or on Windows cmd::
 
-    > set FLASK_APP=SVCure
+    > set FLASK_APP=svcure
     > set FLASK_ENV=development
     > flask init-db
     > flask run --host 0.0.0.0 --port 5000
