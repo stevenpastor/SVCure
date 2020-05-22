@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  {% if g.user %}
+
+
+  <div class="jumbotron py-0 bg-light text-dark mb-0 radius-0">
+    <div class="container">
+      <div class="row">
+        <div class="col-xl-6 jumbo-vertical-center">
+          <div>
+            <h1 class="display-3 mb-2 display-fix">Example Dataset: NA12878</h1>
+            <span class="text-merriweather">A sample dataset for showcasing the annotations feature.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<div style="padding: 20px;">
+
+    <h5>Instructions</h5>
+    <ul>
+        <li>This example is of an already validated deletion at chr1:9535585-9537647 in the NA12878 genome using Illumina paired-end short reads aligned to the GRCh38 reference build.</li>
+        <li>The deletion is supported by: Read Depth, Paired-Ends, Split Reads, and Soft-Clipped bases on the 5' end.</li>
+        <li>The Alignment may be visualized further down this page but for now, let's go over the other parts of an annotation.</li>
+        <hr>
+        <h6>Annotation Form</h6>
+        <li>Scroll down to the "form" which will contain choices about the aforementioned evidence supporting the deletion.</li>
+        <li>Now, we will go over the pieces of evidence from a visual perspective.</li>
+        <li>Seen in Illumina: here, we would click "Yes" instead of "Unsure", since we have a known deletion: do this now.</li>
+        <li>For the multi-checkboxes, they are already all selected for your convenience, so we will now explain them.</li>
+        <li>Read Depth: the depth of mapped read coverage is less in the deleted region than what we would observe in a non-deleted region.</li>
+        <li>Paired-End: reads which pair on either side of a breakpoint(s).</li>
+        <li>Soft-Clipped: reads with unmapped bases, typically in 5' or 3' ends of the reads. Unmapped bases correspond to opposite side of current breakpoint, in the case of this deletion.</li>
+        <li>Split Reads: reads "split" from their expected insert size.</li>
+        <li>Clicking "Save" will not perform any actions for this example, but after choosing the aforementioned options in a typical annotation, one would click "Save" and the annotations are saved for that user.</li>
+        <li>Let's now visualize the deletion in the IGV window further below, to see the aforementioned evidence supporting the deletion.</li>
+        <hr>
+        <h6>IGV Window</h6>
+        <li>Given the definitions above, see if you can observe the evidence for each feature in the IGV window below.</li>
+        <li>Note: for Soft-Clipped evidence, to view soft-clips, click cog to right of NA12878 track, which is the second cog from the top, and select "Show soft clips"</li>
+    </ul>
+    <br>
+    
+
+
+    <h5>Annotation Form</h5>
+    <form method="post">
+      <div id="annotations">
+          <label for="illumina_presence">{{ form_detect.i_choices.label }}</label>
+          {{ form_detect.i_choices }}
+          <label for="illumina_depth">{{ form_detect.idepth_choices(value='Yes') }}&nbsp;&nbsp;{{ form_detect.idepth_choices.label }}</label>&nbsp;&nbsp;
+          <label for="illumina_paired_end">{{ form_detect.ipaired_choices(value='Yes') }}&nbsp;&nbsp;{{ form_detect.ipaired_choices.label }}</label>&nbsp;&nbsp;
+          <label for="illumina_soft_clipped">{{ form_detect.isoft_choices(value='Yes') }}&nbsp;&nbsp;{{ form_detect.isoft_choices.label }}</label>&nbsp;&nbsp;
+          <label for="illumina_split_read">{{ form_detect.isplit_choices(value='Yes') }}&nbsp;&nbsp;{{ form_detect.isplit_choices.label }}</label>&nbsp;&nbsp;
+      </div>  
+    </form>
+
+    <!-- Save merely redirects since this is an example: -->
+    <script>
+      function pageRedirect() {
+        window.location.href = "#";
+      }      
+    </script>
+    <div id="annotations">
+      <button type="submit" class="btn btn-success pull-right" onclick="pageRedirect()" style="padding: 5px 60px;">Save</button>
+    </div>
+    <br>
+
+    <!-- Hidden divs to provide parameters for IGV localization: -->
+    <div id="divCheckbox" style="display: none;">{{ example_data[1][1] }}</div>
+    <div id="divCheckboxtwo" style="display: none;">{{ example_data[1][2] }}</div>
+    <div id="divCheckboxthree" style="display: none;">{{ example_data[1][0] }}</div>
+    <div id="divCheckboxfour" style="display: none;">{{ example_data[1][3] }}</div>
+    <div id="divCheckboxfive" style="display: none;">{{ example_data[1][4] }}</div>
+    <div id="divCheckboxsix" style="display: none;">{{ example_data[1][5] }}</div>
+
+    <h5>IGV Window</h5>
+    <div id="igv-div" style="padding-top: 10px;padding-bottom: 10px; border:1px solid lightgray"></div>
+    <script type="text/javascript">
+        var tmp = document.getElementById("divCheckbox");
+        var genome_bam_cram = tmp.innerHTML;
+        var tmp = document.getElementById("divCheckboxtwo");
+        var genome_bai_crai = tmp.innerHTML;
+        var tmp = document.getElementById("divCheckboxthree");
+        var genome_name = tmp.innerHTML;
+        var tmp = document.getElementById("divCheckboxfour");
+        var genome_ref = tmp.innerHTML;
+        var tmp = document.getElementById("divCheckboxfive");
+        var genome_build = tmp.innerHTML;
+        var tmp = document.getElementById("divCheckboxsix");
+        var genome_variants = tmp.innerHTML;
+        document.addEventListener("DOMContentLoaded", function () {
+            var options =
+            {
+                genome: genome_build,
+                locus: "chr1:9533000-9540000",
+                tracks: [
+                    {
+                        type: 'alignment',
+                        // format: 'cram',
+                        url: 'http://0.0.0.0:5000/static/data/example/'+genome_bam_cram,
+                        indexURL: 'http://0.0.0.0:5000/static/data/example/'+genome_bai_crai,
+                        fastaURL: 'http://0.0.0.0:5000/static/data/example/'+genome_ref,
+                        name: genome_name,
+                        viewAsPairs: true, 
+                        colorBy: "tag", 
+                        colorByTag: "maxFragmentLength",
+                        height: 300
+                    },
+                    {
+                        type: 'annotation',
+                        // format: 'bed',
+                        url: 'http://0.0.0.0:5000/static/data/example/'+genome_variants,
+                        name: 'Deletion', 
+                        visibilityWindow: 10000000, 
+                        displayMode: 'COLLAPSED'
+                    }
+                ]
+            };
+            var igvDiv = document.getElementById("igv-div");
+            igv.createBrowser(igvDiv, options)
+                    .then(function (browser) {
+                        console.log("Created IGV browser");
+                    })
+        });
+    </script>
+  {% else %}
+    <p>Please <a class="action" href="{{ url_for('auth.register') }}">Register</a> or <a class="action" href="{{ url_for('auth.login') }}">Login.</a></p>
+  {% endif %}
+
+</div>
+
+{% endblock %}

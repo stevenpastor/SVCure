@@ -1,0 +1,286 @@
+/* html {
+  font-family: sans-serif;
+  padding: 1rem;
+}
+
+body {
+  margin: 0 auto;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: Arial sans-serif;
+  color: #377ba8;
+  margin: 1rem 0;
+}
+
+a {
+  color: #377ba8;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid lightgray;
+}
+
+nav {
+  display: flex;
+  align-items: center;
+  padding: 0 0.5rem;
+}
+
+nav h1 {
+  flex: auto;
+  margin: 0;
+}
+
+nav h1 a {
+  text-decoration: none;
+  padding: 0.25rem 0.5rem;
+  font-size: 40px;
+}
+
+nav ul  {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+nav ul li a, nav ul li span, header .action {
+  display: block;
+  padding: 0.5rem;
+}
+
+.content {
+  padding: 0 1rem 1rem;
+}
+
+.content > header {
+  display: flex;
+  align-items: flex-end;
+}
+
+.content > header h1 {
+  flex: auto;
+  margin: 1rem 0 0.25rem 0;
+}
+
+.flash {
+  margin: 1em 0;
+  padding: 1em;
+  background: #cae6f6;
+  border: 1px solid #377ba8;
+}
+
+.annotation > header {
+  display: flex;
+  align-items: flex-end;
+  font-size: 0.85em;
+}
+
+.annotation > header > div:first-of-type {
+  flex: auto;
+}
+
+.annotation > header h1 {
+  font-size: 1.5em;
+  margin-bottom: 0;
+}
+
+.annotation .about {
+  color: slategray;
+  font-style: italic;
+}
+
+.annotation .comments {
+  white-space: pre-line;
+}
+
+.content:last-child {
+  margin-bottom: 0;
+}
+
+.content form {
+  margin-bottom: 0.01em;
+  margin-top: 1em;
+  display: flex;
+  flex-direction: column;
+}
+
+.content label {
+  font-weight: bold;
+  margin-bottom: 0.001em;
+}
+
+.content input, .content textarea {
+  margin-bottom: 1em;
+  max-width: 200px;
+}
+
+.content textarea {
+  min-height: 12em;
+  resize: vertical;
+}
+
+input.danger {
+  color: #cc2f2e;
+}
+
+input[type=submit] {
+  align-self: start;
+  min-width: 10em;
+}
+
+#annotations {
+  margin: auto;
+  max-width: 96%;
+  width: 96%;
+  font-size: 13px;
+}
+
+.left {
+  width: 10%;
+  padding: 20px;
+}
+
+.right {
+  width: 85%;
+  padding: 20px;
+}
+
+.navleft {
+  width: 40%;
+  padding: 20px;
+}
+
+.navmiddle {
+  width: 20%;
+  padding-bottom: 20px;
+  display: inline-block;
+}
+
+.navright {
+  width: 40%;
+  padding: 20px;
+}
+
+.dt-buttons {
+  padding: 20px;
+}
+
+#instructions {
+  font-size: 16px;
+  font-family: Arial sans-serif;
+}
+
+td {
+  font-size: 13px;
+}
+
+#navhr {
+  border:none; 
+  height: 10px; 
+  width: 100%; 
+  height: 40px; 
+  margin-top: 0; 
+  border-bottom: 1px solid lightgray; 
+  box-shadow: 0 10px 10px -10px lightgray; 
+  margin: -40px auto 10px;
+} */
+
+#cnvannotatorhome {
+  font-size: 20px; 
+  font-family: Arial sans-serif; 
+  color: #377ba8; 
+  margin: 10rem 20;
+} 
+
+#cnvannotatorreglog {
+  font-size: 20px; 
+  font-family: Arial sans-serif; 
+  color: #377ba8; 
+  margin: 10rem 20;
+}
+
+#entry_form {
+  padding-left: 50px;
+  padding-top: 30px;
+}
+
+#annotation-table_first, #annotation-table_last, #annotation-table_next, #annotation-table_previous {
+  padding: 10px;
+}
+
+table.dataTable thead .sorting:after,
+table.dataTable thead .sorting:before,
+table.dataTable thead .sorting_asc:after,
+table.dataTable thead .sorting_asc:before,
+table.dataTable thead .sorting_asc_disabled:after,
+table.dataTable thead .sorting_asc_disabled:before,
+table.dataTable thead .sorting_desc:after,
+table.dataTable thead .sorting_desc:before,
+table.dataTable thead .sorting_desc_disabled:after,
+table.dataTable thead .sorting_desc_disabled:before {
+bottom: .5em;
+}
+
+/* 3 column layout */
+/*
+* { box-sizing: border-box; }
+
+body { 
+  font-family: 'Open Sans', sans-serif;
+  color: #666;
+}
+
+.wrapper {
+	padding: 5px;
+	max-width: 90%;
+	width: 95%;
+	margin: 20px auto;
+}
+header {
+	padding: 0 15px;
+}
+
+.columns {
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: center;
+	margin: 5px 0;
+}
+
+.column {
+	flex: 1;
+	border: 1px solid gray;
+	margin: 2px;
+	padding: 10px;
+	&:first-child { margin-left: 0; }
+	&:last-child { margin-right: 0; }
+	
+}
+
+footer {
+	padding: 0 15px;
+}
+
+@media screen and (max-width: 980px) {
+  .columns .column {
+		margin-bottom: 5px;
+    flex-basis: 40%;
+		&:nth-last-child(2) {
+			margin-right: 0;
+		}
+		&:last-child {
+			flex-basis: 100%;
+			margin: 0;
+		}
+	}
+}
+
+@media screen and (max-width: 680px) {
+	.columns .column {
+		flex-basis: 100%;
+		margin: 0 0 5px 0;
+	}
+} */

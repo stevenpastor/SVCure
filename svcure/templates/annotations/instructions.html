@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  {% if g.user %}
+  <div class="jumbotron py-0 bg-light text-dark mb-0 radius-0">
+    <div class="container">
+      <div class="row">
+        <div class="col-xl-6 jumbo-vertical-center">
+          <div>
+            <h1 class="display-3 mb-2 display-fix">App Instructions</h1>
+            <span class="text-merriweather">How to load data for the app.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div style="padding: 20px;">
+    <h4>Static File Placement and Formats</h4>
+    <ul>
+        <h5><li>Static files are placed here: path/to/SVCure/svcure/static/public/</li></h5>
+        <br>
+        <h5><li>The following files must be placed into the above static directory:</li></h5>
+        <li><strong>BED:</strong> tab-delimited with 4 columns: chromosome, variant start, variant end, variant type</li>
+        <li>You can put anything in the 4th column if variant is unknown but ensure it exists</li>
+        <li>This column is used to label variants in igv.js and is not case sensitive</li>
+        <li><strong>BAM/CRAM:</strong> May use BAM or CRAM but must have their respective indices named as so: your_name.bam and your_name.bam.bai</li>
+        <li><strong>Reference FASTA:</strong> may use whichever extension (.fa, .fasta, etc.) but the index must be named the same way as described for .bam/.cram format; i.e., your_name.fa and your_name.fa.fai</li>
+    </ul>
+
+    <h4>Single Sample Loading</h4>
+    <ul>
+        <li>Use when you have only one or a few samples to annotate</li>
+        <li>Fill in the form with the given values:</li>
+        <li>1st Column: genome name of choice</li>
+        <li>2nd Column: alignment file in bam or cram format </li>
+        <li>3rd Column: alignment file index, named the same as its respective alignment file but with an added .bai or .crai</li>
+        <li>4th Column: reference fasta file with suffix of choice</li>
+        <li>5th Column: reference build, example: hg18, hg19, hg38, mm10, etc.</li>
+        <li>6th Column: bed file containing variant call with 4 columns (see above)</li>
+        <li>7th Column: technology pertaining to the alignment file</li>
+        <li>Once completely filled-in, click the “save” button below the form</li>
+        <li>Depending on the number of variants in the bed file, the load operation after clicking “save” may be instantaneous or take a few minutes</li>
+    </ul>
+
+    <h4>Batch (Multi-Sample) Loading</h4>
+    <ul>
+        <li>Use when you have several samples to annotate</li>
+        <li>An example file is located in the SVCure directory called: load_annotations.csv</li>
+        <li>Comma-separated format, 7 total columns, and no header</li>
+        <li>Each new line in the file is based on the technology (7th column) pertaining to the alignment (bam/cram) files for a genome</li>
+        <li>Please do not place multiple technologies in the same line</li>
+        <li>1st Column: genome name of choice</li>
+        <li>2nd Column: alignment file in bam or cram format</li>
+        <li>3rd Column: alignment file index, named the same as its respective alignment file but with an added .bai or .crai</li>
+        <li>4th Column: reference fasta file with suffix of choice</li>
+        <li>5th Column: reference build, example: hg18, hg19, hg38, mm10, etc.</li>
+        <li>6th Column: bed file containing variant call with 4 columns (see above)</li>
+        <li>7th Column: technology pertaining to the alignment file</li>
+        <li>Fill in .csv file as above, click the upload button, select filled-in .csv file, click “save” button below upload button</li>
+        <li>After clicking the “save” button, the loading operation may take several minutes if you have several samples with several technologies and thousands of variants per technology</li>
+    </ul>
+
+  {% else %}
+  <p>Please <a class="action" href="{{ url_for('auth.register') }}">Register</a> or <a class="action" href="{{ url_for('auth.login') }}">Login.</a></p>
+  {% endif %}
+
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="jumbotron py-0 bg-light text-dark mb-0 radius-0">
+    <div class="container">
+      <div class="row">
+        <div class="col-xl-6 jumbo-vertical-center">
+          <div>
+            <h1 class="display-3 mb-2 display-fix">Loaded Genomes</h1>
+            <span class="text-merriweather">Genomes currently loaded into the database.</span>
+            <br>
+            <span class="text-merriweather">Click a genome's name to go to its loaded annotations.</span>
+            <br>
+            <br>
+            <div class="mt-3">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="padding:20px; width: 50%;">
+    <table id="serverside_genome_table" class="table table-sm table-hover">
+    <!-- <table id="serverside_genome_table" class="table table-sm table-hover" style="width:30%"> -->
+      <thead>
+        <tr>
+          <th>Genome</th>
+        </tr>
+      </thead>
+    </table>
+
+    <script>
+      function setupData() {
+          $(document).ready(function(){
+            $('#serverside_genome_table').dataTable({
+              "processing": true,
+              "serverSide": true,
+              "ajax": {
+                  "url": "/genome_data",
+                  "dataType": "json",
+                  "dataSrc": "data",
+                  "contentType":"application/json"
+              },
+              "columns": [
+                {
+                  // "targets": 1,
+                  "data": null,
+                  "render": function (data, type, row, meta) {
+                    // return data[0];
+                    // return "<a href='http://0.0.0.0:5000/" + data[0] + "/loaded_annotations'>" + data[0] + "</a>";
+                    // return "<td id=\"edit\" style=\"vertical-align: middle;\"><form method=\"POST\"><input type=\"submit\" name=\"text\" value="+data[0]+"></form></td>";
+                    // return "<form method=\"POST\"><input type=\"submit\" name=\"text\" value=\""+data[0]+"\"></form>";
+                    return "<form method=\"POST\"><input type=\"submit\" name=\"text\" value=\""+data[0]+"\"></form>";
+                  }
+                }
+            ]})
+            // .yadcf([
+            //       {column_number : 0}
+            //       ]);
+          });
+      }
+      $( window ).on( "load", setupData);
+    </script>
+  </div>
+
+{% endblock %}
