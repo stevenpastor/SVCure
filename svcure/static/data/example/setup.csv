@@ -1,2 +1,0 @@
-#genome,alignment,alignment_index,reference,reference_build,variants,technology
-NA12878,NA12878.cram,NA12878.cram.crai,GRCh38_full_analysis_set_plus_decoy_hla.fa,hg38,NA12878.bed,Illumina

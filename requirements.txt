@@ -1,4 +1,0 @@
-flask
-flask_sqlalchemy
-sqlalchemy-datatables
-Flask_WTF

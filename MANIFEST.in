@@ -1,4 +1,0 @@
-graft svcure/static
-graft svcure/templates
-graft tests
-global-exclude *.pyc
