@@ -1,0 +1,319 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="jumbotron py-0 bg-light text-dark mb-0 radius-0">
+    <div class="container">
+      <div class="row">
+        <div class="col-xl-6 jumbo-vertical-center">
+          <div>
+            <h1 class="display-3 mb-2 display-fix">Loaded Annotations</h1>
+            <span class="text-merriweather">Annotations currently loaded into the database for <em>{{ genome }}</em>.</span>
+            <br>
+            <br>
+            <span class="text-merriweather"><a href="http://0.0.0.0:5000/loaded_genomes">Back to Loaded Genomes.</a></span>
+            <br>
+            <div class="mt-3">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<div style="padding:20px;">
+
+<p>
+   <button type="button" id="btn-reload">Reload</button>
+</p>
+
+<p>
+  <button type="submit"><a href="{{ url_for('annotations.download', genome=genome) }}">Export all data</a></button>
+</p>
+
+<table id="example" class="table table-sm table-hover" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th>Genome</th>
+            <th>User</th>
+            <th>Chromosome</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Variant Type</th>
+            <th>Bionano</th>
+            <th>Illumina</th>
+            <th>Nanopore</th>
+            <th>PacBio</th>
+            <th>10XGenomics</th>
+            <th>Comments</th>
+            <th>Annotate</th>
+        </tr>
+    </thead>
+    <tfoot>
+        <tr>
+            <th>Genome</th>
+            <th>User</th>
+            <th>Chromosome</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Variant Type</th>
+            <th>Bionano</th>
+            <th>Illumina</th>
+            <th>Nanopore</th>
+            <th>PacBio</th>
+            <th>10XGenomics</th>
+            <th>Comments</th>
+            <th>Annotate</th>
+        </tr>
+    </tfoot>
+</table>
+</div>
+
+<!-- obtain information to use in table: -->
+<div id="bionano" style="display: none;">{{bionano}}</div>
+<div id="illumina" style="display: none;">{{illumina}}</div>
+<div id="nanopore" style="display: none;">{{nanopore}}</div>
+<div id="pacbio" style="display: none;">{{pacbio}}</div>
+<div id="tenx" style="display: none;">{{tenx}}</div>
+<div id="username" style="display: none;">{{username}}</div>
+
+
+<script>
+
+    // from hidden divs above - used to display username and/or hide techs:
+    var bionano_tmp = document.getElementById("bionano").textContent;
+    var bionano = (bionano_tmp == 'true');
+    var illumina_tmp = document.getElementById("illumina").textContent;
+    var illumina = (illumina_tmp == 'true');
+    var pacbio_tmp = document.getElementById("pacbio").textContent;
+    var pacbio = (pacbio_tmp == 'true');
+    var nanopore_tmp = document.getElementById("nanopore").textContent;
+    var nanopore = (nanopore_tmp == 'true');
+    var tenx_tmp = document.getElementById("tenx").textContent;
+    var tenx = (tenx_tmp == 'true');
+    var username = document.getElementById("username").textContent;
+
+  // begin annotations datatable from loj:
+  $(document).ready(function (){
+    
+    // for searching individual columns:
+    // $('#test_filter input').unbind();
+    // $('#test_filter input').bind('keyup', function(e) {
+    //    if(e.keyCode == 13) {
+    //     table.fnFilter(this.value);   
+    //   }
+    // });
+
+    // $('#example thead tr').clone(true).appendTo( '#example thead' );
+    
+    // $('#example thead tr:eq(1) th').each( function (i) {
+    //   var title = $(this).text();
+    //     $(this).html( '<input type="text" name="test_filter" id="test_filter" size="13" placeholder="Search" />' );
+ 
+    //     $( 'input', this ).on( 'keyup change clear', function () {  
+    //         if ( table.column(i).search() !== this.value ) {
+    //             table
+    //                 .column(i)
+    //                 .search( this.value )
+    //                 .draw();
+    //         }
+    //     });
+      
+    // });
+
+    // Setup - add a text input to each footer cell
+    $('#example tfoot th').each( function () {
+        var title = $(this).text();
+        $(this).html( '<input type="text" name="test_filter" id="test_filter" size="13" placeholder="Search" />' );
+    } );
+
+    // remainder of table and serverside functions:
+    $('#example').on('xhr.dt', function ( e, settings, json, xhr ) {
+        var api = new $.fn.dataTable.Api( settings );
+        
+        // Replace with your actual condition:
+        if(bionano === true){
+          var showColumnB = true;
+        }
+        else {
+          var showColumnB = false;
+        }
+        if(illumina === true){
+          var showColumnI = true;
+        }
+        else {
+          var showColumnI = false;
+        }
+        if(nanopore === true){
+          var showColumnN = true;
+        }
+        else {
+          var showColumnN = false;
+        }
+        if(pacbio === true){
+          var showColumnP = true;
+        }
+        else {
+          var showColumnP = false;
+        }
+        if(tenx === true){
+          var showColumnT = true;
+        }
+        else {
+          var showColumnT = false;
+        }
+        
+        // Hide bionano,illumina,nanopore,pacbio,tenx 
+        // if false (this genome not has tech)
+        api.columns([6]).visible(showColumnB);
+        api.columns([7]).visible(showColumnI);
+        api.columns([8]).visible(showColumnN);
+        api.columns([9]).visible(showColumnP);
+        api.columns([10]).visible(showColumnT);
+    });
+
+    var table = $('#example').DataTable({
+        // search individual columns:
+        orderCellsTop: true,
+        fixedHeader: true,
+        
+        // download table:
+        "lengthMenu": [[10, 25, 50, 100, 500, 1000, 5000, 10000, 50000, 100000, -1], [10, 25, 50, 100, 500, 1000, 5000, 10000, 50000, 100000, "All"]],
+        dom: 'Blfrtip',
+        
+        buttons: [
+          // 'excelHtml5',
+          'copyHtml5',
+        ],
+
+        // serverside processing:
+        "processing": true,
+        "serverSide": true,
+        "ajax":"{{ url_for('annotations.annotation_data', genome=genome) }}",
+        "columns": [
+          {
+            "data": null,
+            "render": function(data, type, row, meta){
+              data = data[0];
+              return data;
+            }
+          },
+          {
+            "data": null,
+            "render": function(data, type, row, meta){
+              data = data[1];
+              return data;
+            }
+          },
+          {
+            "data": null,
+            "render": function(data, type, row, meta){
+              data = data[2];
+              return data;
+            }
+          },
+          {
+            "data": null,
+            "render": function(data, type, row, meta){
+              data = data[3];
+              return data;
+            }
+          },
+          {
+            "data": null,
+            "render": function(data, type, row, meta){
+              data = data[4];
+              return data;
+            }
+          },
+          {
+            "data": null,
+            "render": function(data, type, row, meta){
+              data = data[5];
+              return data;
+            }
+          },
+          {
+            // bionano:
+            "data": null,
+            "render": function(data, type, row, meta){
+              data = String(data[6]) + ", " + String(data[7]) + ", " + String(data[8]) + ", " + String(data[9]);
+              return data;
+            }
+          },
+          {
+            // illumina:
+            "data": null,
+            "render": function(data, type, row, meta){
+              data = String(data[10]) + ", " + String(data[11]) + ", " + String(data[12]) + ", " + String(data[13]) + ", " + String(data[14]);
+              return data;
+            }
+          },
+          {
+            // nanopore:
+            "data": null,
+            "render": function(data, type, row, meta){
+              data = String(data[15]) + ", " + String(data[16]) + ", " + String(data[17]) + ", " + String(data[18]);
+              return data;
+            }
+          },
+          {
+            // pacbio:
+            "data": null,
+            "render": function(data, type, row, meta){
+              data = String(data[19]) + ", " + String(data[20]) + ", " + String(data[21]) + ", " + String(data[22]);
+              return data;
+            }
+          },
+          {
+            // tenx:
+            "data": null,
+            "render": function(data, type, row, meta){
+              data = String(data[23]) + ", " + String(data[24]) + ", " + String(data[25]) + ", " + String(data[26]) + ", " + String(data[27]);
+              return data;
+            }
+          },
+          {
+            // comments:
+            "data": null,
+            "render": function(data, type, row, meta){
+              data = data[28];
+              return data;
+            }
+          },
+          {
+            // annotations -> update:
+            "data": null,
+            "render": function(data, type, row, meta){
+              data = '<a class="btn btn-primary pull-right" href="http://0.0.0.0:5000/' + username + '/' + data[29] + '/update">Edit '+data[2]+':'+data[3]+'-'+data[4]+'</a>';
+              return data;
+            }
+          }
+          ]
+    });
+
+    // Apply the search
+    table.columns().every( function () {
+        var that = this;
+ 
+        $( 'input', this.footer() ).on( 'change', function () {
+            if ( that.search() !== this.value ) {
+                that
+                    .search( this.value )
+                    .draw();
+            }
+        } );
+    } );
+    
+    $('#btn-reload').on('click', function(){
+       table.ajax.reload();
+    });
+
+    $('#example tfoot tr').appendTo('#example thead');
+
+  });
+
+</script>
+
+
+
+{% endblock %}

@@ -1,0 +1,397 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="jumbotron py-0 bg-light text-dark mb-0 radius-0">
+  <div class="container">
+    <div class="row">
+      <div class="col-xl-6 jumbo-vertical-center">
+        <div>
+          <!-- <h1 class="display-3 mb-2 display-fix">Annotate  genome </h1> -->
+          <span class="text-merriweather">Please choose from the multiple choice using IGV below.</span>
+          <br>
+          <br>
+          <span class="text-merriweather"><a href= "{{ url_for('annotations.loaded_annotations', genome=genome) }}">Back to Loaded Annotations.</a></span>
+          <br>
+          <div class="mt-3">
+            {% if annotation_id > 1 %}
+              <a class="btn btn-primary" href="/{{ current_user }}/{{ annotation_id-1 }}/update">&larr; Prev Annotation</a>
+            {% endif %}
+            {% if annotation_id < total_records %}
+              <a style="float: right;" class="btn btn-primary" href="/{{ current_user }}/{{ annotation_id+1 }}/update">Next Annotation &rarr;</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <form method="post">
+    <div id="annotations" class="container">
+      <div class="row">
+
+        {% if bionano == 'true' %}
+          <div class="col">
+            <label for="bionano_presence">{{ form_detect.b_choices.label }}</label>
+            {{ form_detect.b_choices }}
+            <label for="bionano_depth">{{ form_detect.bdepth_choices(value='Yes') }}&nbsp;&nbsp;{{ form_detect.bdepth_choices.label }}</label>&nbsp;&nbsp;
+            <label for="bionano_spanning">{{ form_detect.bmols_choices(value='Yes') }}&nbsp;&nbsp;{{ form_detect.bmols_choices.label }}</label>&nbsp;&nbsp;
+            <label for="bionano_partial">{{ form_detect.bpartial_choices(value='Yes') }}&nbsp;&nbsp;{{ form_detect.bpartial_choices.label }}</label>&nbsp;&nbsp;
+          </div>
+        {% endif %}
+
+        {% if illumina == 'true' %}
+          <div class="col">
+            <label for="illumina_presence">{{ form_detect.i_choices.label }}</label>
+            {{ form_detect.i_choices }}
+            <label for="illumina_depth">{{ form_detect.idepth_choices(value='Yes') }}&nbsp;&nbsp;{{ form_detect.idepth_choices.label }}</label>&nbsp;&nbsp;
+            <label for="illumina_paired_end">{{ form_detect.ipaired_choices(value='Yes') }}&nbsp;&nbsp;{{ form_detect.ipaired_choices.label }}</label>&nbsp;&nbsp;
+            <label for="illumina_soft_clipped">{{ form_detect.isoft_choices(value='Yes') }}&nbsp;&nbsp;{{ form_detect.isoft_choices.label }}</label>&nbsp;&nbsp;
+            <label for="illumina_split_read">{{ form_detect.isplit_choices(value='Yes') }}&nbsp;&nbsp;{{ form_detect.isplit_choices.label }}</label>&nbsp;&nbsp;
+          </div>
+        {% endif %}
+
+        {% if nanopore == 'true' %}
+          <div class="col">
+            <label for="nanopore_presence">{{ form_detect.n_choices.label }}</label>
+            {{ form_detect.n_choices }}
+            <label for="nanopore_depth">{{ form_detect.ndepth_choices(value='Yes') }}&nbsp;&nbsp;{{ form_detect.ndepth_choices.label }}</label>&nbsp;&nbsp;
+            <label for="nanopore_soft_clipped">{{ form_detect.nsoft_choices(value='Yes') }}&nbsp;&nbsp;{{ form_detect.nsoft_choices.label }}</label>&nbsp;&nbsp;
+            <label for="nanopore_split_read">{{ form_detect.nsplit_choices(value='Yes') }}&nbsp;&nbsp;{{ form_detect.nsplit_choices.label }}</label>&nbsp;&nbsp;
+          </div>
+        {% endif %}
+
+        {% if pacbio == 'true' %}
+          <div class="col">
+            <label for="pacbio_presence">{{ form_detect.p_choices.label }}</label>
+            {{ form_detect.p_choices }}
+            <label for="pacbio_depth">{{ form_detect.pdepth_choices(value='Yes') }}&nbsp;&nbsp;{{ form_detect.pdepth_choices.label }}</label>&nbsp;&nbsp;
+            <label for="pacbio_soft_clipped">{{ form_detect.psoft_choices(value='Yes') }}&nbsp;&nbsp;{{ form_detect.psoft_choices.label }}</label>&nbsp;&nbsp;
+            <label for="pacbio_split_read">{{ form_detect.psplit_choices(value='Yes') }}&nbsp;&nbsp;{{ form_detect.psplit_choices.label }}</label>&nbsp;&nbsp;
+          </div>
+        {% endif %}
+
+        {% if tenx == 'true' %}
+          <div class="col">
+            <label for="tenx_presence">{{ form_detect.t_choices.label }}</label>
+            {{ form_detect.t_choices }}
+            <label for="tenx_depth">{{ form_detect.tdepth_choices(value='Yes') }}&nbsp;&nbsp;{{ form_detect.tdepth_choices.label }}</label>&nbsp;&nbsp;
+            <label for="tenx_soft_clipped">{{ form_detect.tsoft_choices(value='Yes') }}&nbsp;&nbsp;{{ form_detect.tsoft_choices.label }}</label>&nbsp;&nbsp;
+            <label for="tenx_split_read">{{ form_detect.tsplit_choices(value='Yes') }}&nbsp;&nbsp;{{ form_detect.tsplit_choices.label }}</label>&nbsp;&nbsp;
+            <label for="tenx_linked_read">{{ form_detect.tlinked_choices(value='Yes') }}&nbsp;&nbsp;{{ form_detect.tlinked_choices.label }}</label>&nbsp;&nbsp;
+          </div>
+        {% endif %}
+
+        <div class="col">
+          <!-- <label for="comments">Comments</label> -->
+          <!-- % if annotation % -->
+            <!-- <textarea name="comments" id="comments"> annotation[0].comments </textarea> -->
+          <!-- % else % -->
+            <!-- <textarea name="comments" id="comments"> request.form['comments'] </textarea> -->
+          <!-- % endif % -->
+
+          <label for="comments">{{ form_detect.comments.label }}</label>
+          {{form_detect.comments}}
+        </div>
+
+        
+        <!-- <div class="col"> -->
+          <!-- <input type="submit" value="Save" class="btn btn-success pull-right" style="margin: 10%;"> -->
+          <!-- <form action=" url_for('annotation.delete', id=annotation['id']) " method="post" style="margin: 10%;"> -->
+            <!-- <input class="btn btn-danger pull-right" type="submit" value="Delete" onclick="return confirm('Are you sure?');" style="margin: 10%;"> -->
+          <!-- </form> -->
+        </div>
+      </div>
+    </div>  
+
+    <input type="submit" value="Save">
+  </form>
+  <hr>
+  <!-- <form action=" annotation.delete_url " method="post"> -->
+    <!-- <input class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');"> -->
+  <!-- </form> -->
+
+
+
+  {% if illumina == 'true' %}
+    <div id="igv-div" style="padding-top: 10px;padding-bottom: 10px; border:1px solid lightgray"></div>
+    <br>
+    <!-- <div><input type="submit" class="btn btn-primary" value="Reset IGV" onclick="resetIGV(this)"></div> -->
+  {% endif %}
+  {% if pacbio == 'true' %}
+    <div id="igv-div2" style="padding-top: 10px;padding-bottom: 10px; border:1px solid lightgray"></div>
+    <br>
+    <!-- <div><input type="submit" class="btn btn-primary" value="Reset IGV" onclick="resetIGV(this)"></div> -->
+  {% endif %}
+  {% if nanopore == 'true' %}
+    <div id="igv-div3" style="padding-top: 10px;padding-bottom: 10px; border:1px solid lightgray"></div>
+    <br>
+    <!-- <div><input type="submit" class="btn btn-primary" value="Reset IGV" onclick="resetIGV(this)"></div> -->
+  {% endif %}
+  {% if tenx == 'true' %}
+    <div id="igv-div4" style="padding-top: 10px;padding-bottom: 10px; border:1px solid lightgray"></div>
+    <br>
+    <!-- <div><input type="submit" class="btn btn-primary" value="Reset IGV" onclick="resetIGV(this)"></div> -->
+  {% endif %}
+
+  <!-- Hidden divs to provide parameters for IGV localization: -->
+  <div id="divCheckbox" style="display: none;">{{ illumina_bam_cram }}</div>
+  <div id="divCheckboxtwo" style="display: none;">{{ illumina_bai_crai }}</div>
+
+  <div id="divCheckboxpone" style="display: none;">{{ pacbio_bam_cram }}</div>
+  <div id="divCheckboxptwo" style="display: none;">{{ pacbio_bai_crai }}</div>
+
+  <div id="divCheckboxnone" style="display: none;">{{ nanopore_bam_cram }}</div>
+  <div id="divCheckboxntwo" style="display: none;">{{ nanopore_bai_crai }}</div>
+
+  <div id="divCheckboxtone" style="display: none;">{{ tenx_bam_cram }}</div>
+  <div id="divCheckboxttwo" style="display: none;">{{ tenx_bai_crai }}</div>
+  
+  <div id="divCheckboxthree" style="display: none;">{{ genome }}</div>
+  
+  <div id="divCheckboxfour" style="display: none;">{{ reference }}</div>
+  <div id="divCheckboxfive" style="display: none;">{{ reference_build }}</div>
+  <div id="divCheckboxsix" style="display: none;">{{ bed }}</div>
+
+  <div id="divCheckboxseven" style="display: none;">{{ illumina_tech }}</div>
+  <div id="divCheckboxpt" style="display: none;">{{ pacbio_tech }}</div>
+  <div id="divCheckboxnt" style="display: none;">{{ nanopore_tech }}</div>
+  <div id="divCheckboxtt" style="display: none;">{{ tenx_tech }}</div>
+
+  <div id="chr" style="display: none;">{{ variants[0].chromosome }}</div>
+  <div id="start" style="display: none;">{{ variants[0].sv_start }}</div>
+  <div id="end" style="display: none;">{{ variants[0].sv_end }}</div>
+
+  <script type="text/javascript">
+    var div, div2, div3, div4, options, browser;
+    // Parsing divs for db data:
+    var tmp = document.getElementById("divCheckbox");
+    var illumina_bam_cram = tmp.innerHTML;
+    var tmp = document.getElementById("divCheckboxtwo");
+    var illumina_bai_crai = tmp.innerHTML;
+    var tmp = document.getElementById("divCheckboxpone");
+    var pacbio_bam_cram = tmp.innerHTML;
+    var tmp = document.getElementById("divCheckboxptwo");
+    var pacbio_bai_crai = tmp.innerHTML;
+    var tmp = document.getElementById("divCheckboxnone");
+    var nanopore_bam_cram = tmp.innerHTML;
+    var tmp = document.getElementById("divCheckboxntwo");
+    var nanopore_bai_crai = tmp.innerHTML;
+    var tmp = document.getElementById("divCheckboxtone");
+    var tenx_bam_cram = tmp.innerHTML;
+    var tmp = document.getElementById("divCheckboxttwo");
+    var tenx_bai_crai = tmp.innerHTML;
+    var tmp = document.getElementById("divCheckboxthree");
+    var genome_name = tmp.innerHTML;
+    var tmp = document.getElementById("divCheckboxfour");
+    var genome_reference = tmp.innerHTML;
+    var tmp = document.getElementById("divCheckboxfive");
+    var genome_reference_build = tmp.innerHTML;
+    var tmp = document.getElementById("divCheckboxsix");
+    var genome_bed = tmp.innerHTML;
+    var tmp = document.getElementById("divCheckboxseven");
+    var genome_tech = tmp.innerHTML;
+    var tmp = document.getElementById("divCheckboxpt");
+    var pacbio_genome_tech = tmp.innerHTML;
+    var tmp = document.getElementById("divCheckboxnt");
+    var nanopore_genome_tech = tmp.innerHTML;
+    var tmp = document.getElementById("divCheckboxtt");
+    var tenx_genome_tech = tmp.innerHTML;
+    var tmp = document.getElementById("chr");
+    var genome_chromosome = tmp.innerHTML;
+    
+    // ISSUE: no start element
+    var tmp = document.getElementById("start");
+    if (parseInt(tmp.innerHTML) > 1000) {
+      var genome_start = parseInt(tmp.innerHTML) - 1000;
+    } else {
+      var genome_start = parseInt(tmp.innerHTML);
+    }
+    var genome_start_cram = parseInt(tmp.innerHTML).toString();
+    
+    var tmp = document.getElementById("end");
+    var genome_end = parseInt(tmp.innerHTML) + 1000;
+    var genome_end_cram = parseInt(tmp.innerHTML).toString();
+
+    // console.log(genome_start);
+    // console.log(genome_start_cram);
+    // console.log(genome_end);
+    // console.log(genome_end_cram);
+
+    document.addEventListener("DOMContentLoaded", function () {
+        var options =
+        {
+            genome: genome_reference_build,
+            locus: genome_chromosome+":"+genome_start+"-"+genome_end,
+            // genome: "hg38",
+            tracks: [
+                {
+                  url: 'http://0.0.0.0:5000/static/data/public/'+illumina_bam_cram, 
+                  indexURL: 'http://0.0.0.0:5000/static/data/public/'+illumina_bai_crai, 
+                  fastaURL: 'http://0.0.0.0:5000/static/data/public/'+genome_reference,
+                  name: genome_name+' '+genome_tech+' CRAM', 
+                  height: 400, 
+                  viewAsPairs: true, 
+                  colorBy: "tag", 
+                  colorByTag: "maxFragmentLength", 
+                  visibilityWindow: 100000
+                }, 
+                {
+                  type: 'annotation',
+                  url: 'http://0.0.0.0:5000/static/data/public/'+genome_bed,
+                  name: 'CNV', 
+                  visibilityWindow: 10000000, 
+                  displayMode: 'COLLAPSED'
+                },
+                {
+                  "name": "Simple", 
+                  "url": "https://data.broadinstitute.org/igvdata/annotations/hg38/rmsk/Simple_repeat.bed.gz", 
+                  "indexURL": "https://data.broadinstitute.org/igvdata/annotations/hg38/rmsk/Simple_repeat.bed.gz.tbi", 
+                  "type": "annotation", 
+                  "format": "bed", 
+                  "visibilityWindow": 10000000, 
+                  "displayMode": "COLLAPSED"
+                }
+            ]
+        };
+        var igvDiv = document.getElementById("igv-div");
+        igv.createBrowser(igvDiv, options)
+                .then(function (browser) {
+                    console.log("Created IGV browser");
+                })
+
+        // PacBio:
+        var options2 =
+        {
+            genome: genome_reference_build,
+            locus: genome_chromosome+":"+genome_start+"-"+genome_end,
+            // genome: "hg38",
+            tracks: [
+                {
+                  url: 'http://0.0.0.0:5000/static/data/public/'+pacbio_bam_cram, 
+                  indexURL: 'http://0.0.0.0:5000/static/data/public/'+pacbio_bai_crai, 
+                  fastaURL: 'http://0.0.0.0:5000/static/data/public/'+genome_reference,
+                  name: genome_name+' '+pacbio_genome_tech+' CRAM', 
+                  height: 400, 
+                  viewAsPairs: true, 
+                  colorBy: "tag", 
+                  colorByTag: "maxFragmentLength", 
+                  visibilityWindow: 100000
+                }, 
+                {
+                  type: 'annotation',
+                  url: 'http://0.0.0.0:5000/static/data/public/'+genome_bed,
+                  name: 'CNV', 
+                  visibilityWindow: 10000000, 
+                  displayMode: 'COLLAPSED'
+                },
+                {
+                  "name": "Simple", 
+                  "url": "https://data.broadinstitute.org/igvdata/annotations/hg38/rmsk/Simple_repeat.bed.gz", 
+                  "indexURL": "https://data.broadinstitute.org/igvdata/annotations/hg38/rmsk/Simple_repeat.bed.gz.tbi", 
+                  "type": "annotation", 
+                  "format": "bed", 
+                  "visibilityWindow": 10000000, 
+                  "displayMode": "COLLAPSED"
+                }
+            ]
+        };
+        var igvDiv2 = document.getElementById("igv-div2");
+        igv.createBrowser(igvDiv2, options2)
+                .then(function (browser) {
+                    console.log("Created IGV browser");
+                })
+
+        // Nanopore:
+        var options3 =
+        {
+            genome: genome_reference_build,
+            locus: genome_chromosome+":"+genome_start+"-"+genome_end,
+            // genome: "hg38",
+            tracks: [
+                {
+                  url: 'http://0.0.0.0:5000/static/data/public/'+nanopore_bam_cram, 
+                  indexURL: 'http://0.0.0.0:5000/static/data/public/'+nanopore_bai_crai, 
+                  fastaURL: 'http://0.0.0.0:5000/static/data/public/'+genome_reference,
+                  name: genome_name+' '+nanopore_genome_tech+' CRAM', 
+                  height: 400, 
+                  viewAsPairs: true, 
+                  colorBy: "tag", 
+                  colorByTag: "maxFragmentLength", 
+                  visibilityWindow: 100000
+                }, 
+                {
+                  type: 'annotation',
+                  url: 'http://0.0.0.0:5000/static/data/public/'+genome_bed,
+                  name: 'CNV', 
+                  visibilityWindow: 10000000, 
+                  displayMode: 'COLLAPSED'
+                },
+                {
+                  "name": "Simple", 
+                  "url": "https://data.broadinstitute.org/igvdata/annotations/hg38/rmsk/Simple_repeat.bed.gz", 
+                  "indexURL": "https://data.broadinstitute.org/igvdata/annotations/hg38/rmsk/Simple_repeat.bed.gz.tbi", 
+                  "type": "annotation", 
+                  "format": "bed", 
+                  "visibilityWindow": 10000000, 
+                  "displayMode": "COLLAPSED"
+                }
+            ]
+        };
+        var igvDiv3 = document.getElementById("igv-div3");
+        igv.createBrowser(igvDiv3, options3)
+                .then(function (browser) {
+                    console.log("Created IGV browser");
+                })
+
+        // TenX:
+        var options4 =
+        {
+            genome: genome_reference_build,
+            locus: genome_chromosome+":"+genome_start+"-"+genome_end,
+            // genome: "hg38",
+            tracks: [
+                {
+                  url: 'http://0.0.0.0:5000//static/data/public/'+tenx_bam_cram, 
+                  indexURL: 'http://0.0.0.0:5000/static/data/public/'+tenx_bai_crai, 
+                  fastaURL: 'http://0.0.0.0:5000/static/data/public/'+genome_reference,
+                  name: genome_name+' '+tenx_genome_tech+' CRAM', 
+                  height: 400, 
+                  viewAsPairs: true, 
+                  colorBy: "tag", 
+                  colorByTag: "maxFragmentLength", 
+                  visibilityWindow: 100000
+                }, 
+                {
+                  type: 'annotation',
+                  url: 'http://0.0.0.0:5000//static/data/public/'+genome_bed,
+                  name: 'CNV', 
+                  visibilityWindow: 10000000, 
+                  displayMode: 'COLLAPSED'
+                },
+                {
+                  "name": "Simple", 
+                  "url": "https://data.broadinstitute.org/igvdata/annotations/hg38/rmsk/Simple_repeat.bed.gz", 
+                  "indexURL": "https://data.broadinstitute.org/igvdata/annotations/hg38/rmsk/Simple_repeat.bed.gz.tbi", 
+                  "type": "annotation", 
+                  "format": "bed", 
+                  "visibilityWindow": 10000000, 
+                  "displayMode": "COLLAPSED"
+                }
+            ]
+        };
+        var igvDiv4 = document.getElementById("igv-div4");
+        igv.createBrowser(igvDiv4, options4)
+                .then(function (browser) {
+                    console.log("Created IGV browser");
+                })
+
+
+    });
+
+    // Reset IGV to original coordinates
+    // function resetIGV(x) {
+    //   browser.search(genome_chromosome+":"+genome_start+"-"+genome_end);
+    // };
+</script>
+{% endblock %}
