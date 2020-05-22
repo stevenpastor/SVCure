@@ -33,6 +33,7 @@ Or on Windows cmd::
 Install SVCure::
 
     $ pip install -r requirements.txt
+    $ mkdir instance
 
 
 VENV and Pip Run::
