@@ -637,6 +637,7 @@ def update(user_name, id):
 
     if request.method == "POST":
         comments = request.form["comments"]
+        sv_type = request.form["sv_type"]
 
         # illumina:
         if "i_choices" in request.form:
@@ -780,6 +781,11 @@ def update(user_name, id):
                     )
                     db.session.execute(stmt)
                     db.session.commit()
+
+                   # update variant type (sv_type):
+                   variant = update(Variants).where(Variants.id == id).values(variant = sv_type)
+                   db.session.execute(variant)
+                   db.session.commit()
             # if current user or no user has yet to annotate this variant_id:
             else:
                 annotation = Annotations(
@@ -812,6 +818,11 @@ def update(user_name, id):
                 tenx_linked_read = tenx_linked_read,
                 )
                 db.session.add(annotation)
+                db.session.commit()
+
+                # update variant type (sv_type):
+                variant = update(Variants).where(Variants.id == id).values(variant = sv_type)
+                db.session.execute(variant)
                 db.session.commit()
             return redirect(url_for("annotations.update", id=id, user_name=g.user.username))
 
@@ -985,6 +996,14 @@ def update(user_name, id):
             form_detect.comments.default = str(comments_tmp[0][0])
         else:
             form_detect.comments.default = ""
+
+        # sv type:
+        form_detect.sv_type.choices = TextAreaField(default='')
+        sv_type_tmp = db.session.query(Variants.variant).filter(Variants.id == id).all()
+        if len(sv_type_tmp) > 0:
+            form_detect.sv_type.default = str(sv_type_tmp[0][0])
+        else:
+            form_detect.sv_type.default = ""
 
         form_detect.process()
 

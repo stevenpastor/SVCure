@@ -34,4 +34,5 @@ class DetectForm(Form):
     tsplit_choices = BooleanField('Split Reads', default='unchecked')
     tlinked_choices = BooleanField('Linked Reads', default='unchecked')
     comments = TextAreaField("Comments", default="")
+    sv_type = TextAreaField("sv_type", default="")
 
